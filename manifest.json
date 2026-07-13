@@ -1,0 +1,34 @@
+{
+  "name": "Flux — Learn Tech Daily",
+  "short_name": "Flux",
+  "description": "Tech is always changing, so are you. Learn something new every day.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#070810",
+  "theme_color": "#070810",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Today's Feed",
+      "short_name": "Feed",
+      "url": "./index.html?screen=feed",
+      "description": "View today's tech digest"
+    },
+    {
+      "name": "Explore Cards",
+      "short_name": "Explore",
+      "url": "./index.html?screen=explore",
+      "description": "Swipe through tech concepts"
+    }
+  ]
+}

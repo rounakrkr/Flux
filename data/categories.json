@@ -1,0 +1,13 @@
+{
+  "categories": [
+    { "name": "AI & ML",            "emoji": "🧠", "desc": "Machine Learning & AI Systems",        "color": "#a855f7" },
+    { "name": "IoT",                "emoji": "📡", "desc": "Internet of Things",                    "color": "#06b6d4" },
+    { "name": "Computer Networks",  "emoji": "🌐", "desc": "Protocols & Architectures",             "color": "#3b82f6" },
+    { "name": "Cybersecurity",      "emoji": "🔒", "desc": "Security & Cryptography",               "color": "#ef4444" },
+    { "name": "Hardware",           "emoji": "💾", "desc": "Electronics & Architecture",             "color": "#f59e0b" },
+    { "name": "New Inventions",     "emoji": "🚀", "desc": "Emerging Technologies",                  "color": "#f97316" },
+    { "name": "Robotics",           "emoji": "🤖", "desc": "Automation & Robotics",                 "color": "#10b981" },
+    { "name": "Programming",        "emoji": "⌨️", "desc": "CS Theory & Code Concepts",             "color": "#6366f1" },
+    { "name": "The Basics",         "emoji": "🔭", "desc": "Fundamentals Every Engineer Should Know","color": "#14b8a6" }
+  ]
+}

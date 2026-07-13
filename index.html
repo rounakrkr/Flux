@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#070810"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Flux"/>
+
+  <title>Flux — Learn Tech Daily</title>
+  <meta name="description" content="Tech is always changing, so are you. Learn bite-sized tech concepts every day with AI-powered explanations."/>
+
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml"/>
+  <link rel="apple-touch-icon" href="icons/icon.svg"/>
+  <link rel="stylesheet" href="styles/main.css"/>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Flux — Learn Tech Daily"/>
+  <meta property="og:description" content="Tech is always changing, so are you."/>
+  <meta property="og:type" content="website"/>
+</head>
+<body>
+
+<!-- =========================================================
+     LOADING OVERLAY
+     ========================================================= -->
+<div id="loading-overlay">
+  <div class="load-logo">flux</div>
+  <div class="load-tagline">tech is always changing, so are you</div>
+  <div class="dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
+</div>
+
+<!-- =========================================================
+     ONBOARDING / API KEY SETUP
+     ========================================================= -->
+<div id="onboarding" style="display:none">
+  <div class="onb-content">
+    <div class="onb-logo">flux</div>
+    <p class="onb-tagline">tech is always changing, so are you</p>
+
+    <div class="onb-card">
+      <h2 class="onb-title">Welcome, Engineer! 🚀</h2>
+      <p class="onb-desc">Flux uses Google's Gemini AI to generate fresh tech knowledge for you every day. You need a free API key to get started.</p>
+
+      <div class="onb-steps">
+        <div class="onb-step">
+          <span class="onb-step-num">1</span>
+          <div>
+            <strong>Get your free API key</strong>
+            <p>Go to <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener" style="color:var(--accent);text-decoration:underline">aistudio.google.com/apikey</a> → Create API Key → Copy it</p>
+          </div>
+        </div>
+        <div class="onb-step">
+          <span class="onb-step-num">2</span>
+          <div>
+            <strong>Paste it below</strong>
+            <p>Your key stays on YOUR device only. Never sent anywhere except Google's API.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="onb-input-wrap">
+        <input type="text" id="onb-key-input" class="onb-input" placeholder="AIzaSy..." autocomplete="off" spellcheck="false"/>
+        <div class="onb-error" id="onb-error"></div>
+      </div>
+
+      <button class="onb-btn" id="onb-submit">Start Learning →</button>
+    </div>
+
+    <p class="onb-footer">Your key is stored locally on this device. <br/>Flux never collects or shares your data.</p>
+  </div>
+</div>
+
+<!-- =========================================================
+     APP SHELL
+     ========================================================= -->
+<div id="app">
+
+  <!-- HEADER -->
+  <header id="app-header">
+    <div class="logo-wrap">
+      <span class="logo-text">flux</span>
+      <span class="logo-tagline">tech is always changing, so are you</span>
+    </div>
+    <div class="streak-pill" id="streak-pill" title="Your streak • Long press to change API key">
+      <span class="flame">🔥</span>
+      <span id="streak-count">0</span>
+    </div>
+  </header>
+
+  <!-- PWA Install Banner (shown only when installable) -->
+  <div id="install-banner">
+    <span style="font-size:22px">📲</span>
+    <div class="ib-text">
+      <strong>Add Flux to Home Screen</strong>
+      <span>Access it like a real app, zero effort</span>
+    </div>
+    <span class="ib-btn">Install →</span>
+  </div>
+
+  <!-- =================== SCREENS =================== -->
+  <main id="main-content">
+
+    <!-- FEED SCREEN -->
+    <section id="screen-feed" class="screen active" aria-label="Today's Feed">
+      <div class="screen-hdr">
+        <h2>Today's Digest</h2>
+        <p class="sub" id="feed-date">Loading...</p>
+      </div>
+      <div class="feed-container" id="feed-container">
+        <!-- Feed cards injected by JS -->
+      </div>
+    </section>
+
+    <!-- EXPLORE / SWIPE SCREEN -->
+    <section id="screen-explore" class="screen" aria-label="Explore Tech Cards">
+      <div class="screen-hdr" style="padding-bottom:0">
+        <h2>Explore</h2>
+        <p class="sub">Swipe to learn, swipe to save</p>
+      </div>
+      <div class="filter-row" id="explore-filters">
+        <!-- Category chips injected by JS -->
+      </div>
+      <div class="swipe-arena" id="swipe-arena">
+        <!-- Swipe cards injected by JS -->
+      </div>
+      <div class="swipe-btns">
+        <button class="swipe-btn skip-btn" id="btn-skip" aria-label="Skip card" title="Skip">✕</button>
+        <button class="swipe-btn save-btn" id="btn-save" aria-label="Save card" title="Save">✓</button>
+      </div>
+    </section>
+
+    <!-- CATEGORIES SCREEN -->
+    <section id="screen-categories" class="screen" aria-label="Browse Categories">
+      <div class="screen-hdr">
+        <h2>Topics</h2>
+        <p class="sub">Pick a domain to deep dive</p>
+      </div>
+      <div class="cat-grid" id="cat-grid">
+        <!-- Category cards injected by JS -->
+      </div>
+    </section>
+
+    <!-- STATS SCREEN -->
+    <section id="screen-stats" class="screen" aria-label="Your Stats">
+      <div class="screen-hdr">
+        <h2>Your Progress</h2>
+        <p class="sub">Keep the streak alive 🔥</p>
+      </div>
+      <div class="stats-wrap" id="stats-wrap">
+        <!-- Stats injected by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =================== BOTTOM NAV =================== -->
+  <nav id="bottom-nav" aria-label="Main navigation">
+    <button class="nav-item active" data-screen="feed" id="nav-feed" aria-label="Feed">
+      <span class="nav-icon">📰</span>
+      <span class="nav-label">Feed</span>
+    </button>
+    <button class="nav-item" data-screen="explore" id="nav-explore" aria-label="Explore">
+      <span class="nav-icon">🃏</span>
+      <span class="nav-label">Explore</span>
+    </button>
+    <button class="nav-item" data-screen="categories" id="nav-categories" aria-label="Topics">
+      <span class="nav-icon">🗂</span>
+      <span class="nav-label">Topics</span>
+    </button>
+    <button class="nav-item" data-screen="stats" id="nav-stats" aria-label="Stats">
+      <span class="nav-icon">⚡</span>
+      <span class="nav-label">Stats</span>
+    </button>
+  </nav>
+
+</div><!-- #app -->
+
+<!-- =========================================================
+     DEEP DIVE MODAL (bottom sheet)
+     ========================================================= -->
+<div id="modal-overlay" role="dialog" aria-modal="true" aria-label="Deep Dive">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+
+    <div class="modal-head" style="position:relative">
+      <button class="modal-close-btn" id="modal-close-btn" aria-label="Close">✕</button>
+      <span id="modal-emoji">🔬</span>
+      <h2 id="modal-title">Concept</h2>
+      <span id="modal-cat-tag"></span>
+    </div>
+
+    <div class="modal-body">
+      <!-- Analogy -->
+      <div class="modal-sec">
+        <div class="modal-sec-lbl">🧩 In Simple Terms</div>
+        <div class="modal-sec-txt" id="modal-analogy"></div>
+      </div>
+      <!-- Engineer's Take -->
+      <div class="modal-sec">
+        <div class="modal-sec-lbl">⚙️ Engineer's Take</div>
+        <div class="modal-sec-txt" id="modal-engineer"></div>
+      </div>
+      <!-- Did you know -->
+      <div class="dyk-box">
+        <div class="dyk-lbl">💡 Did You Know?</div>
+        <div class="dyk-txt" id="modal-dyk"></div>
+      </div>
+      <!-- Related topics -->
+      <div class="related-row" id="modal-related"></div>
+    </div>
+
+    <!-- AI Chat -->
+    <div class="chat-wrap">
+      <div class="chat-hdr">Ask anything about this →</div>
+      <div class="chat-msgs" id="chat-msgs"></div>
+      <div class="chat-row">
+        <input type="text" class="chat-input" id="chat-input" placeholder="e.g. Give me a real-life example..." autocomplete="off"/>
+        <button class="chat-send" id="chat-send" aria-label="Send">→</button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="modal-actions">
+      <button class="modal-btn" id="modal-share-btn">🔗 Share</button>
+      <button class="modal-btn primary" id="modal-save-btn">✓ Save Card</button>
+    </div>
+  </div>
+</div>
+
+<!-- =========================================================
+     TOAST CONTAINER
+     ========================================================= -->
+<div id="toast-wrap" aria-live="polite"></div>
+
+<!-- =========================================================
+     SCRIPTS
+     ========================================================= -->
+<script src="js/storage.js"></script>
+<script src="js/gemini.js"></script>
+<script src="js/swipe.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

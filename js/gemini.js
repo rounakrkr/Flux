@@ -18,7 +18,7 @@ const Gemini = (() => {
   }
 
   function getUrl() {
-    return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${getApiKey()}`;
+    return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${getApiKey()}`;
   }
 
   // Core API call

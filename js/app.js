@@ -431,7 +431,7 @@ const App = {
       // Quick test call to verify the key works
       Gemini.setApiKey(key);
       try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`;
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
         const res = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -444,6 +444,16 @@ const App = {
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
           const msg = data?.error?.message || `Error ${res.status}`;
+
+          // If it's a quota/rate-limit error, the key IS valid — just temporarily blocked
+          if (res.status === 429 || msg.toLowerCase().includes('quota')) {
+            // Key is valid, just rate limited — save it and proceed
+            document.getElementById('onboarding').style.display = 'none';
+            document.getElementById('app').style.display = '';
+            showToast('✓ Key saved! Rate limit hit — feed will load shortly.', 'info');
+            await Feed.load();
+            return;
+          }
           throw new Error(msg);
         }
 

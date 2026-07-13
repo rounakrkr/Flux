@@ -1,7 +1,7 @@
-// Flux — Service Worker v1
+// Flux — Service Worker v2
 // Handles caching and offline support
 
-const CACHE_NAME = 'flux-v1';
+const CACHE_NAME = 'flux-v2';
 const CORE_ASSETS = [
   './index.html',
   './styles/main.css',

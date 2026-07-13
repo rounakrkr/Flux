@@ -94,12 +94,12 @@ const Feed = {
         </div>`;
     }).join('');
 
-    const cards = this._cards;
+    const savedCards = this._cards;
     container.querySelectorAll('.feed-card').forEach((el, i) => {
       el.addEventListener('click', () => {
         el.classList.add('read');
-        App.openModal(cards[i]);
-        Storage.recordLearned(cards[i].category);
+        App.openModal(savedCards[i]);
+        Storage.recordLearned(savedCards[i].category);
         document.getElementById('streak-count').textContent = Storage.getStats().streak;
       });
     });

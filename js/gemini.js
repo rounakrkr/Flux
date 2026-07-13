@@ -19,8 +19,8 @@ const Gemini = (() => {
 
   // Model fallback chain — if one is quota-limited, try the next
   const MODELS = [
-    'gemini-2.5-flash',
     'gemini-2.0-flash-lite',
+    'gemini-2.0-flash',
     'gemini-1.5-flash',
   ];
 

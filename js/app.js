@@ -609,6 +609,7 @@ const App = {
 };
 
 /* ============================================================
-   Bootstrap
+   Bootstrap — use DOMContentLoaded so Google Fonts loading
+   doesn't block the app from starting
    ============================================================ */
-window.addEventListener('load', () => App.init());
+document.addEventListener('DOMContentLoaded', () => App.init());

@@ -3,7 +3,7 @@
    "Tech is always changing, so are you."
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+/* Google Fonts loaded non-blocking via <link> in index.html */
 
 /* ---- Design Tokens ---- */
 :root {

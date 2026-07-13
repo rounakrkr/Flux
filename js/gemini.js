@@ -19,10 +19,10 @@ const Gemini = (() => {
 
   // Model fallback chain — if one is quota-limited, try the next
   const MODELS = [
+    'gemini-2.5-flash-lite',
     'gemini-2.0-flash-lite',
     'gemini-2.0-flash',
-    'gemini-1.5-flash',
-    'gemini-1.5-flash-lite',
+    'gemini-2.5-flash',
   ];
 
   function getUrl(model) {
@@ -49,9 +49,9 @@ const Gemini = (() => {
           body: JSON.stringify(body),
         });
 
-        if (res.status === 429) {
-          // Rate limited on this model — try next
-          lastError = new Error(`${model}: rate limited`);
+        if (res.status === 429 || res.status === 404) {
+          // Rate limited or model unavailable — try next
+          lastError = new Error(`${model}: ${res.status === 429 ? 'rate limited' : 'not available'}`);
           continue;
         }
 

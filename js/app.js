@@ -70,7 +70,8 @@ const Feed = {
         <div class="empty">
           <span class="ico">⚡</span>
           <h3>Couldn't load feed</h3>
-          <p>Check your internet connection. Gemini API needs to reach the internet.</p>
+          <p style="font-size:12px;color:#ef4444;word-break:break-word;margin-bottom:8px">${err.message}</p>
+          <p>This is usually a temporary API rate limit. Wait a minute and retry.</p>
           <button class="btn-primary" onclick="Feed.load()">Retry</button>
         </div>`;
     }

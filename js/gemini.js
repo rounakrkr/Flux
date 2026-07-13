@@ -17,11 +17,18 @@ const Gemini = (() => {
     return !!getApiKey();
   }
 
-  function getUrl() {
-    return `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${getApiKey()}`;
+  // Model fallback chain — if one is quota-limited, try the next
+  const MODELS = [
+    'gemini-2.5-flash',
+    'gemini-2.0-flash-lite',
+    'gemini-1.5-flash',
+  ];
+
+  function getUrl(model) {
+    return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${getApiKey()}`;
   }
 
-  // Core API call
+  // Core API call with automatic model fallback
   async function call(prompt, json = true) {
     const body = {
       contents: [{ parts: [{ text: prompt }] }],
@@ -32,21 +39,44 @@ const Gemini = (() => {
       },
     };
 
-    const res = await fetch(getUrl(), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    let lastError;
+    for (const model of MODELS) {
+      try {
+        const res = await fetch(getUrl(model), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
 
-    if (!res.ok) {
-      const txt = await res.text();
-      throw new Error(`Gemini ${res.status}: ${txt.slice(0, 200)}`);
+        if (res.status === 429) {
+          // Rate limited on this model — try next
+          lastError = new Error(`${model}: rate limited`);
+          continue;
+        }
+
+        if (!res.ok) {
+          const txt = await res.text();
+          // If quota error, try next model
+          if (txt.toLowerCase().includes('quota')) {
+            lastError = new Error(`${model}: quota exceeded`);
+            continue;
+          }
+          throw new Error(`Gemini ${res.status}: ${txt.slice(0, 200)}`);
+        }
+
+        const data = await res.json();
+        const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!text) throw new Error('Empty Gemini response');
+        return json ? JSON.parse(text) : text;
+      } catch (err) {
+        lastError = err;
+        // Only retry on quota/rate errors, not on other failures
+        if (!err.message.includes('rate limited') && !err.message.includes('quota')) {
+          throw err;
+        }
+      }
     }
-
-    const data = await res.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!text) throw new Error('Empty Gemini response');
-    return json ? JSON.parse(text) : text;
+    throw lastError || new Error('All models exhausted');
   }
 
   // ---- Card schema note (for prompts) ----

@@ -84,10 +84,10 @@ const Gemini = (() => {
   "title": "specific concept/technology name",
   "category": "category name",
   "emoji": "one relevant emoji",
-  "oneLiner": "one catchy sentence, max 15 words",
-  "analogy": "explain using something from everyday life (washing machine, traffic light, postal system style). 2-3 sentences. Make it creative and specific.",
-  "engineerTake": "accurate technical explanation using proper terminology. 2-3 sentences.",
-  "didYouKnow": "one genuinely surprising or counterintuitive fact",
+  "oneLiner": "one catchy sentence, max 15 words, use simple everyday words",
+  "analogy": "explain using something from everyday life (washing machine, traffic light, postal system style). 2-3 sentences. Use very simple language like you're explaining to a friend who is NOT from tech. No jargon.",
+  "engineerTake": "the technical side — what actually happens under the hood. 2-3 sentences. Use technical terms but explain each one briefly in brackets if it's uncommon.",
+  "didYouKnow": "one genuinely surprising or counterintuitive fact, written in simple casual tone",
   "relatedTopics": ["topic1", "topic2", "topic3"]
 }`;
 
@@ -97,7 +97,7 @@ const Gemini = (() => {
     const cached = Storage.getDailyFeed(today);
     if (cached && cached.length >= 4) return cached;
 
-    const prompt = `You are a tech educator for Computer Science Engineering students. Generate today's daily tech learning digest.
+    const prompt = `You are a friendly tech buddy who explains things in simple everyday language. Generate today's daily tech learning digest.
 
 Create exactly 6 diverse tech knowledge cards. Cover EXACTLY these domains (one card each):
 1. AI & ML — pick something specific and non-obvious (NOT "what is machine learning")
@@ -109,8 +109,10 @@ Create exactly 6 diverse tech knowledge cards. Cover EXACTLY these domains (one 
 
 Rules:
 - Avoid very basic/introductory topics. Go specific.
+- Write like you're chatting with a friend — simple words, short sentences, no textbook tone
 - The analogy field must be genuinely creative and relatable (think: explaining WiFi using water pipes, TCP handshake using a phone call)
 - Make it something an engineering student would NOT have heard in class yet
+- A non-tech person should also be able to understand the analogy and oneLiner
 
 Return a JSON ARRAY of exactly 6 objects. Each object must have ALL these fields:
 ${CARD_SCHEMA}`;
@@ -136,9 +138,10 @@ ${CARD_SCHEMA}`;
     };
 
     const topic = catDesc[category] || catDesc['All'];
-    const prompt = `Generate ONE tech knowledge card about ${topic} for a CSE engineering student.
+    const prompt = `Generate ONE tech knowledge card about ${topic}.
 
-Be specific — pick an interesting concept they probably haven't heard explained well.
+Be specific — pick an interesting concept and explain it like you're talking to a smart friend who doesn't know tech jargon.
+Use simple everyday language. Short sentences. No textbook vibes.
 
 Return a SINGLE JSON object with ALL these fields:
 ${CARD_SCHEMA}
@@ -164,9 +167,10 @@ The "category" field must be: "${category === 'All' ? 'any relevant category' : 
     };
 
     const topic = catDesc[category] || catDesc['All'];
-    const prompt = `Generate 3 DIFFERENT tech knowledge cards about ${topic} for a CSE student.
+    const prompt = `Generate 3 DIFFERENT tech knowledge cards about ${topic}.
 
 Make them varied — 3 distinct concepts, not variations of the same thing.
+Write in simple everyday language like chatting with a friend. No textbook tone.
 The category field for each card should be "${category}" (or a specific subcategory if category is "All").
 
 Return a JSON ARRAY of exactly 3 objects. Each must have ALL these fields:
@@ -184,8 +188,9 @@ ${cardContext}
 
 The student asks: "${question}"
 
-Respond conversationally (not like a textbook). Be clear, accurate, and engaging.
-Use an analogy or example if it helps.
+Respond like a friendly senior explaining to a junior — casual, simple words, no jargon.
+If you use a technical term, explain it in simple words right after.
+Use an analogy or real-life example if it helps.
 Keep it to 3-5 sentences max.
 
 Return ONLY your response text — no JSON, no preamble.`;
